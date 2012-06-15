@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
   s.name        = "crazy_harry"
   s.version     = CrazyHarry::VERSION
   s.authors     = ["TA Tyree"]
-  s.email       = ["tatyree@gmail.com"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.email       = ["todd.tyree@lonelyplanet.co.uk"]
+  s.homepage    = "https://github.com/lonelyplanet/crazy_harry"
+  s.summary     = %q{High level HTML fragment sanitizer}
+  s.description = %q{High level HTML fragment sanitizer}
 
   s.rubyforge_project = "crazy_harry"
 
@@ -19,6 +19,10 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   # specify any dependencies here; for example:
-  # s.add_development_dependency "rspec"
-  # s.add_runtime_dependency "rest-client"
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'guard'
+  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'simplecov'
+
+  s.add_runtime_dependency 'loofah'
 end
