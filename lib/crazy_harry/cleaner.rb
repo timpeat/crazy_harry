@@ -8,7 +8,7 @@ module CrazyHarry
       blocks:   %w(div p)
     }
 
-    attr_accessor :fragment, :from, :to, :steps
+    attr_accessor :fragment, :from, :to, :text, :steps
 
     def initialize(opts = {})
       self.fragment = Loofah.fragment(opts.delete(:fragment)) if opts.has_key?(:fragment)
@@ -18,6 +18,8 @@ module CrazyHarry
     def change(opts)
       self.from  =  opts.delete(:from)
       self.to    =  opts.delete(:to)
+      self.text  =  opts.delete(:text)
+
       self.steps << generic_from_to
 
       convert_inline_element_to_block!
@@ -36,8 +38,13 @@ module CrazyHarry
       return if convert_inline_element_to_block?
 
       Loofah::Scrubber.new do |node|
-        node.name = self.to if node.name == self.from
+        node.name = self.to if convert_this_node?(node)
       end
+    end
+
+    def convert_this_node?(node)
+      ( self.text ? node.text == self.text : true ) &&
+      ( node.name == self.from )
     end
 
     def convert_inline_element_to_block!
