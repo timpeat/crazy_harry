@@ -20,10 +20,6 @@ describe CrazyHarry::Cleaner do
       CrazyHarry::Cleaner.new( fragment: 'Hotel Details<br />' ).change( from: 'br', to: 'p' ).run!.should == '<p>Hotel Details</p>'
     end
 
-    it "spec_name" do
-      
-    end
-
   end
 
 end
