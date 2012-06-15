@@ -5,6 +5,11 @@ describe CrazyHarry::Cleaner do
   #   Change br to p
   #   Change b to h3 where b has text: "location"
   #   Change b to em where b inside p
+  #
+  #   Add attribute: "partner" to all tags
+  #
+  #   Another ADS suggestion.  Not sure it if it needed for the first cut.
+  #   Transform "lodging" to "hotel"
 
   context "change" do
 
