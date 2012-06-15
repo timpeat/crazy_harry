@@ -3,6 +3,11 @@ require 'loofah'
 module CrazyHarry
   class Cleaner
 
+    BLOCK_CONVERSION_ELEMENTS = {
+      inlines:  %w(br),
+      blocks:   %w(div p)
+    }
+
     attr_accessor :fragment, :from, :to, :steps
 
     def initialize(opts = {})
@@ -39,14 +44,15 @@ module CrazyHarry
       return unless convert_inline_element_to_block?
 
       fragment.xpath("#{self.from}/following-sibling::text()|#{self.from}/preceding-sibling::text()").each do |node|
-        node.replace(Nokogiri.make("<#{self.to}>#{node.to_html}</#{self.to}>")) unless node.content =~ /\A\s*\z/
+        node.replace(Nokogiri.make("<#{self.to}>#{node.to_html.strip}</#{self.to}>")) unless node.content =~ /\A\s*\z/
       end
 
       fragment.scrub!(scrub_tag(self.from))
     end
 
     def convert_inline_element_to_block?
-      self.to[/p/] && self.from[/br/]
+      BLOCK_CONVERSION_ELEMENTS[:inlines].include?(self.from) &&
+      BLOCK_CONVERSION_ELEMENTS[:blocks].include?(self.to)
     end
 
     def scrub_tag(tag_name)
