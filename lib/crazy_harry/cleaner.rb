@@ -8,7 +8,8 @@ module CrazyHarry
       blocks:   %w(div p)
     }
 
-    attr_accessor :fragment, :from, :to, :text, :steps
+    attr_accessor :fragment, :from, :to, :text,
+                  :scope, :steps
 
     def initialize(opts = {})
       self.fragment = Loofah.fragment(opts.delete(:fragment)) if opts.has_key?(:fragment)
@@ -19,6 +20,7 @@ module CrazyHarry
       self.from  =  opts.delete(:from)
       self.to    =  opts.delete(:to)
       self.text  =  opts.delete(:text)
+      self.scope =  opts.delete(:scope)
 
       self.steps << generic_from_to
 
@@ -43,7 +45,8 @@ module CrazyHarry
     end
 
     def convert_this_node?(node)
-      ( self.text ? node.text == self.text : true ) &&
+      ( self.text   ? node.text == self.text          : true ) &&
+      ( self.scope  ? node.parent.name == self.scope  : true ) &&
       ( node.name == self.from )
     end
 

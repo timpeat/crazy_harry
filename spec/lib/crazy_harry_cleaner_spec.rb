@@ -7,6 +7,7 @@ describe CrazyHarry::Cleaner do
   #   Change b to em where b inside p
 
   context "change" do
+
     subject { CrazyHarry::Cleaner }
 
     it "should be able to change one tag to another" do
@@ -29,9 +30,23 @@ describe CrazyHarry::Cleaner do
       subject.new( fragment: '<h3>Hotel Details</h3>' ).change( from: 'snoogenflozen', to: 'snarglebat' ).run!.should == '<h3>Hotel Details</h3>'
     end
 
-    it "should be able to target changes by content" do
-      subject.new( fragment: 'Hot <b>hotels</b> in <b>Saigon</b>' ).change( from: 'b', to: 'em', text: 'hotels').run!.should ==
-        'Hot <em>hotels</em> in <b>Saigon</b>'
+    context "targeting and scoping" do
+
+      it "should change all occurrences" do
+       subject.new( fragment: '<div><b>Hotels</b></div><p><b>Hotels</b></p><b>Tents</b><div><p><b>Campervan</b></p></div>' ).change( from: 'b', to: 'em').run!.should ==
+          '<div><em>Hotels</em></div><p><em>Hotels</em></p><em>Tents</em><div><p><em>Campervan</em></p></div>'
+      end
+
+      it "should be able to target changes by content" do
+        subject.new( fragment: 'Hot <b>hotels</b> in <b>Saigon</b>' ).change( from: 'b', to: 'em', text: 'hotels' ).run!.should ==
+          'Hot <em>hotels</em> in <b>Saigon</b>'
+      end
+
+      it "should be able to scope changes to specific blocks" do
+        subject.new( fragment: '<div><b>Hotels</b></div><p><b>Hotels</b></p><b>Tents</b>' ).change( from: 'b', to: 'em', scope: 'p' ).run!.should ==
+          '<div><b>Hotels</b></div><p><em>Hotels</em></p><b>Tents</b>'
+      end
+
     end
 
     context "inline tags to blocks" do
