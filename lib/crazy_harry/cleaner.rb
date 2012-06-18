@@ -1,5 +1,3 @@
-require 'loofah'
-
 module CrazyHarry
   class Cleaner
 
