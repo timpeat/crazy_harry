@@ -60,13 +60,17 @@ describe CrazyHarry::Redactor do
       subject.new( fragment: '<b>Location: </b> <b>Prices:</b>' ).strip( tags: 'b' ).run!.should == 'Location: Prices:'
     end
 
+    it "should add a newline after a stripped block element" do
+      subject.new( fragment: '<h3>Location:</h3><p>Lorem ipsum</p>' ).strip( tags: 'h3' ).run!.should == "Location:\n<p>Lorem ipsum</p>"
+    end
+
   end
 
   context "targeting and scope" do
 
     it "should allow strip to be targeted by the tag content" do
       subject.new( fragment: '<h3>Location:</h3><h3>Ho Chi Minh City</h3>' ).strip( tags: 'h3', text: 'Location:' ).run!.should ==
-        'Location: <h3>Ho Chi Minh City</h3>'
+        "Location:\n<h3>Ho Chi Minh City</h3>"
     end
 
     it "should be able to scope changes to specific blocks" do

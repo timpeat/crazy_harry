@@ -53,9 +53,13 @@ module CrazyHarry
 
     def strip_tags
       Loofah::Scrubber.new do |node|
-        content = "#{node.content} "
+        content = block_node?(node) ? "#{node.content}\n" : "#{node.content} "
         node.replace(content) if alter_this_node?(node)
       end
+    end
+
+    def block_node?(node)
+      Loofah::Elements::BLOCK_LEVEL.include?(node.name)
     end
 
   end
