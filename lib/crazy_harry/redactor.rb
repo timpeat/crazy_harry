@@ -5,7 +5,7 @@ module CrazyHarry
     STRIP_METHODS =  %w(strip prune escape whitewash)
 
     attr_accessor :fragment, :steps, :unsafe, :tags,
-      :text, :scope
+      :text, :scope, :attributes
 
     def initialize(opts = {})
       self.fragment = Loofah.fragment(opts.delete(:fragment)) if opts.has_key?(:fragment)
@@ -17,14 +17,24 @@ module CrazyHarry
     end
 
     def strip(opts = {})
-      self.unsafe = opts.delete(:unsafe) || opts == {}
-      self.tags   = [opts.delete(:tags)].compact.flatten
-      self.text  =  opts.delete(:text)
-      self.scope =  opts.delete(:scope)
+      self.unsafe       = opts.delete(:unsafe) || opts == {}
+      self.tags         = [opts.delete(:tags)].compact.flatten
+      self.attributes   = opts.delete(:attributes)
+      self.text         = opts.delete(:text)
+      self.scope        = opts.delete(:scope)
 
       self.steps << strip_unsafe  if self.unsafe
       self.steps << strip_tags    unless self.tags == []
 
+      self
+    end
+
+    def prune(opts)
+      self.tags   = [opts.delete(:tags)].compact.flatten
+      self.text   =  opts.delete(:text)
+      self.scope  =  opts.delete(:scope)
+
+      self.steps << prune_tags
       self
     end
 
@@ -36,8 +46,9 @@ module CrazyHarry
     private
 
     def alter_this_node?(node)
-      ( self.text   ? node.text == self.text          : true ) &&
-      ( self.scope  ? node.parent.name == self.scope  : true ) &&
+      ( self.text       ? node.text == self.text                          : true ) &&
+      ( self.scope      ? node.parent.name == self.scope                  : true ) &&
+      ( self.attributes ? self.attributes.any?{ |a,v| node[a.to_s] == v } : true ) &&
       self.tags.include?(node.name)
     end
 
@@ -61,6 +72,16 @@ module CrazyHarry
     def block_node?(node)
       Loofah::Elements::BLOCK_LEVEL.include?(node.name)
     end
+
+    def prune_tags
+      Loofah::Scrubber.new do |node|
+        if alter_this_node?(node)
+          node.remove
+          Loofah::Scrubber::STOP # don't bother with the rest of the subtree
+        end
+      end
+    end
+
 
   end
 end
