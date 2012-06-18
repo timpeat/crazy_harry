@@ -22,19 +22,12 @@ module CrazyHarry
       self.attributes   = opts.delete(:attributes)
       self.text         = opts.delete(:text)
       self.scope        = opts.delete(:scope)
+      prune             = opts.delete(:prune)
 
       self.steps << strip_unsafe  if self.unsafe
-      self.steps << strip_tags    unless self.tags == []
+      self.steps << strip_tags    unless prune || self.tags == []
+      self.steps << prune_tags    if prune
 
-      self
-    end
-
-    def prune(opts)
-      self.tags   = [opts.delete(:tags)].compact.flatten
-      self.text   =  opts.delete(:text)
-      self.scope  =  opts.delete(:scope)
-
-      self.steps << prune_tags
       self
     end
 

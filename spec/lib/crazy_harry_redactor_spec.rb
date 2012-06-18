@@ -97,10 +97,10 @@ describe CrazyHarry::Redactor do
 
   end
 
-  context 'prune' do
+  context 'pruning' do
 
     it 'should be able to prune a tag, removing the tag and its contents' do
-      subject.new( fragment: 'I do not want <h3>Big</h3> images.').prune( tags: 'h3' ).run!.should == 'I do not want images.'
+      subject.new( fragment: 'I do not want <h3>Big</h3> images.').strip( tags: 'h3', prune: true ).run!.should == 'I do not want images.'
     end
 
   end
