@@ -27,5 +27,19 @@ describe CrazyHarry::Translator do
       '<h3>Hotel</h3> hotel'
   end
 
+  context "targeting and scope" do
+
+    it "should only add attributes to targeted content"  do
+      translator.new( fragment: '<h3>Location:</h3><h3>Saigon</h3>' ).translate( add_attributes: { class: 'partner' }, text: 'Location:' ).run!.should ==
+        '<h3 class="partner">Location:</h3><h3>Saigon</h3>'
+    end
+
+    it "should be able to scope changes to specific blocks" do
+      translator.new( fragment: '<div><b>Hotel</b></div><p><b>Hotel</b></p><b>Tent</b>' ).translate( add_attributes: { class: 'ugly' }, scope: 'p' ).run!.should ==
+        '<div><b>Hotel</b></div><p><b class="ugly">Hotel</b></p><b>Tent</b>'
+    end
+
+
+  end
 
 end
