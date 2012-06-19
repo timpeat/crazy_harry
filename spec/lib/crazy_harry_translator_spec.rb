@@ -39,7 +39,6 @@ describe CrazyHarry::Translator do
         '<div><b>Hotel</b></div><p><b class="ugly">Hotel</b></p><b>Tent</b>'
     end
 
-
   end
 
 end
