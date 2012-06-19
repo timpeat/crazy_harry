@@ -1,16 +1,10 @@
 module CrazyHarry
-  class Redactor
+  class Redactor < Base
     class InvalidStripMethod < StandardError; end;
 
     STRIP_METHODS =  %w(strip prune escape whitewash)
 
-    attr_accessor :fragment, :steps, :unsafe, :tags,
-      :text, :scope, :attributes
-
-    def initialize(opts = {})
-      self.fragment = Loofah.fragment(opts.delete(:fragment)) if opts.has_key?(:fragment)
-      self.steps = []
-    end
+    attr_accessor :attributes, :tags, :unsafe
 
     def strip!
       fragment.to_text
@@ -31,16 +25,10 @@ module CrazyHarry
       self
     end
 
-    def run!
-      steps.compact.each{ |step| fragment.scrub!(step) }
-      fragment.to_s.squeeze(' ').strip
-    end
-
     private
 
     def alter_this_node?(node)
-      ( self.text       ? node.text == self.text                          : true ) &&
-      ( self.scope      ? node.parent.name == self.scope                  : true ) &&
+      super(node) &&
       ( self.attributes ? self.attributes.any?{ |a,v| node[a.to_s] == v } : true ) &&
       self.tags.include?(node.name)
     end

@@ -1,18 +1,12 @@
 module CrazyHarry
-  class Cleaner
+  class Cleaner < Base
 
     BLOCK_CONVERSION_ELEMENTS = {
       inlines:  %w(br),
       blocks:   %w(div p)
     }
 
-    attr_accessor :fragment, :from, :to, :text,
-                  :scope, :steps
-
-    def initialize(opts = {})
-      self.fragment = Loofah.fragment(opts.delete(:fragment)) if opts.has_key?(:fragment)
-      self.steps = []
-    end
+    attr_accessor :from, :to
 
     def change(opts)
       self.from  =  opts.delete(:from)
@@ -27,25 +21,24 @@ module CrazyHarry
       self
     end
 
-    def run!
-      steps.compact.each{ |step| fragment.scrub!(step) }
-      fragment.to_s
+    private
+
+    def alter_this_node?(node)
+      super(node) &&
+      ( node.name == self.from )
     end
 
-    private
+    def convert_inline_element_to_block?
+      BLOCK_CONVERSION_ELEMENTS[:inlines].include?(self.from) &&
+      BLOCK_CONVERSION_ELEMENTS[:blocks].include?(self.to)
+    end
 
     def generic_from_to
       return if convert_inline_element_to_block?
 
       Loofah::Scrubber.new do |node|
-        node.name = self.to if convert_this_node?(node)
+        node.name = self.to if alter_this_node?(node)
       end
-    end
-
-    def convert_this_node?(node)
-      ( self.text   ? node.text == self.text          : true ) &&
-      ( self.scope  ? node.parent.name == self.scope  : true ) &&
-      ( node.name == self.from )
     end
 
     def convert_inline_element_to_block!
@@ -56,11 +49,6 @@ module CrazyHarry
       end
 
       fragment.scrub!(scrub_tag(self.from))
-    end
-
-    def convert_inline_element_to_block?
-      BLOCK_CONVERSION_ELEMENTS[:inlines].include?(self.from) &&
-      BLOCK_CONVERSION_ELEMENTS[:blocks].include?(self.to)
     end
 
     def scrub_tag(tag_name)
