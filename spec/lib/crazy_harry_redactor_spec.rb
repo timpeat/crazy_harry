@@ -25,48 +25,62 @@ describe CrazyHarry::Redactor do
   context "strip specific tags" do
 
     it "should be able to strip unsafe tags" do
-      redactor.new( fragment: 'Me steal <script>Cookie!</script>').strip( unsafe: true ).run!.should == 'Me steal'
-      redactor.new( fragment: 'What is that <bloog>thing</bloog>?').strip( unsafe: true ).run!.should == 'What is that ?'
+      redactor.new( fragment: 'Me steal <script>Cookie!</script>').redact!( unsafe: true ).to_s.should == 'Me steal'
+      redactor.new( fragment: 'What is that <bloog>thing</bloog>?').redact!( unsafe: true ).to_s.should == 'What is that ?'
     end
 
     it "should allow the unsafe strip method to be overridden (it prunes by default)" do
       fragment = 'Me steal <script>Cookie!</script>'
-      redactor.new( fragment: fragment).strip( unsafe: :escape ).run!.should == 'Me steal &lt;script&gt;Cookie!&lt;/script&gt;'
-      redactor.new( fragment: fragment).strip( unsafe: :strip ).run!.should == 'Me steal Cookie!'
+      redactor.new( fragment: fragment).redact!( unsafe: :escape ).to_s.should == 'Me steal &lt;script&gt;Cookie!&lt;/script&gt;'
+      redactor.new( fragment: fragment).redact!( unsafe: :strip ).to_s.should == 'Me steal Cookie!'
     end
 
     it "should prune unsafe tags if called without any arguments" do
-      redactor.new( fragment: 'Me steal <script>Cookie!</script>').strip.run!.should == 'Me steal'
+      redactor.new( fragment: 'Me steal <script>Cookie!</script>').redact!.to_s.should == 'Me steal'
     end
 
     it "should raise an error if asked for an unknown strip method" do
-      -> { redactor.new( fragment: 'Any old thing').strip( unsafe: 'magical_magic' ).run! }.should raise_error(CrazyHarry::Redactor::InvalidStripMethod)
+      -> { redactor.new( fragment: 'Any old thing').redact!( unsafe: 'magical_magic' ).to_s }.should raise_error(CrazyHarry::Redactor::InvalidStripMethod)
     end
 
     it "should be able to strip a specific tag" do
-      redactor.new( fragment: '<b>Location:</b><p>Saigon</p>' ).strip( tags: 'b' ).run!.should == "Location: <p>Saigon</p>"
+      redactor.new( fragment: '<b>Location:</b><p>Saigon</p>' ).redact!( tags: 'b' ).to_s.should == "Location: <p>Saigon</p>"
     end
 
     it "should strip every occurrence of a tag" do
-      redactor.new( fragment: '<b>Location:</b><p>Saigon</p><b>Rates:</b>' ).strip( tags: 'b' ).run!.should == "Location: <p>Saigon</p>Rates:"
+      redactor.new( fragment: '<b>Location:</b><p>Saigon</p><b>Rates:</b>' ).redact!( tags: 'b' ).to_s.should == "Location: <p>Saigon</p>Rates:"
     end
 
     it "should be able to strip multiple tags" do
-      redactor.new( fragment: '<b>One</b><p>Saigon <em>Plaza</em></p>').strip( tags: %w(b em)).run!.should == "One <p>Saigon Plaza </p>"
+      redactor.new( fragment: '<b>One</b><p>Saigon <em>Plaza</em></p>').redact!( tags: %w(b em)).to_s.should == "One <p>Saigon Plaza </p>"
     end
 
     it "should close a paragraph tag early if the fragment has an illegally nested header tag" do
-      redactor.new( fragment: '<b>One</b><p>Saigon <h3>Plaza</h3></p>').strip( tags: %w(b h3)).run!.should == "One <p>Saigon </p>Plaza"
+      redactor.new( fragment: '<b>One</b><p>Saigon <h3>Plaza</h3></p>').redact!( tags: %w(b h3)).to_s.should == "One <p>Saigon </p>Plaza"
+    end
+
+    context "chaining and multiple arguments" do
+
+      it "should be able to chain calls" do
+        redactor.new( fragment: '<b>Location:</b><script>Steal Cookie</script><em>Plaza</em>' ).redact!( tags: 'b' ).redact!( unsafe: true ).to_s.should ==
+          'Location: <em>Plaza</em>'
+      end
+
+      it "should accept multiple, different commands in a single call" do
+        redactor.new( fragment: '<b>Location:</b><script>Steal Cookie</script><em>Plaza</em>' ).redact!( tags: 'b', unsafe: true ).to_s.should ==
+          'Location: <em>Plaza</em>'
+      end
+
     end
 
     context "whitespace and breaks" do
 
       it "shouldn't add excessive extra whitespace" do
-        redactor.new( fragment: '<b>Location: </b> <b>Prices:</b>' ).strip( tags: 'b' ).run!.should == 'Location: Prices:'
+        redactor.new( fragment: '<b>Location: </b> <b>Prices:</b>' ).redact!( tags: 'b' ).to_s.should == 'Location: Prices:'
       end
 
       it "should add a newline after a stripped block element" do
-        redactor.new( fragment: '<h3>Location:</h3><p>Lorem ipsum</p>' ).strip( tags: 'h3' ).run!.should == "Location:\n<p>Lorem ipsum</p>"
+        redactor.new( fragment: '<h3>Location:</h3><p>Lorem ipsum</p>' ).redact!( tags: 'h3' ).to_s.should == "Location:\n<p>Lorem ipsum</p>"
       end
 
     end
@@ -74,22 +88,22 @@ describe CrazyHarry::Redactor do
     context "targeting and scope" do
 
       it "should allow strip to be targeted by the tag content" do
-        redactor.new( fragment: '<h3>Location:</h3><h3>Ho Chi Minh City</h3>' ).strip( tags: 'h3', text: 'Location:' ).run!.should ==
+        redactor.new( fragment: '<h3>Location:</h3><h3>Ho Chi Minh City</h3>' ).redact!( tags: 'h3', text: 'Location:' ).to_s.should ==
           "Location:\n<h3>Ho Chi Minh City</h3>"
       end
 
       it "should allow strip to be targeted by an attribute" do
-        redactor.new( fragment: '<h3 class="big">Big</h3><h3 class="red">Red</h3>').strip( tags: 'h3', attributes: { class: 'red' } ).run!.should ==
+        redactor.new( fragment: '<h3 class="big">Big</h3><h3 class="red">Red</h3>').redact!( tags: 'h3', attributes: { class: 'red' } ).to_s.should ==
           '<h3 class="big">Big</h3>Red'
       end
 
       it "should be able to scope changes to specific blocks" do
-        redactor.new( fragment: '<div><b>Hotels</b></div><p><b>Hotels</b></p><b>Tents</b>' ).strip( tags: 'b', scope: 'p' ).run!.should ==
+        redactor.new( fragment: '<div><b>Hotels</b></div><p><b>Hotels</b></p><b>Tents</b>' ).redact!( tags: 'b', scope: 'p' ).to_s.should ==
           '<div><b>Hotels</b></div><p>Hotels </p><b>Tents</b>'
       end
 
       it "should allow strip to be targeted and scoped" do
-        redactor.new( fragment: '<b>Location:</b><p><b>Big</b> <b>Bad</b> Hotel</p>' ).strip( tags: 'b', scope: 'p', text: 'Big' ).run!.should ==
+        redactor.new( fragment: '<b>Location:</b><p><b>Big</b> <b>Bad</b> Hotel</p>' ).redact!( tags: 'b', scope: 'p', text: 'Big' ).to_s.should ==
           '<b>Location:</b><p>Big <b>Bad</b> Hotel</p>'
       end
 
@@ -100,7 +114,7 @@ describe CrazyHarry::Redactor do
   context 'pruning' do
 
     it 'should be able to prune a tag, removing the tag and its contents' do
-      redactor.new( fragment: 'I do not want <h3>Big</h3> images.').strip( tags: 'h3', prune: true ).run!.should == 'I do not want images.'
+      redactor.new( fragment: 'I do not want <h3>Big</h3> images.').redact!( tags: 'h3', prune: true ).to_s.should == 'I do not want images.'
     end
 
   end

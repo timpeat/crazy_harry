@@ -10,7 +10,7 @@ module CrazyHarry
       fragment.to_text
     end
 
-    def strip(opts = {})
+    def redact!(opts = {})
       self.unsafe       = opts.delete(:unsafe) || opts == {}
       self.tags         = [opts.delete(:tags)].compact.flatten
       self.attributes   = opts.delete(:attributes)
@@ -21,6 +21,8 @@ module CrazyHarry
       self.steps << strip_unsafe  if self.unsafe
       self.steps << strip_tags    unless prune || self.tags == []
       self.steps << prune_tags    if prune
+
+      self.run!
 
       self
     end
