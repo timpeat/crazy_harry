@@ -1,5 +1,8 @@
 require 'rubygems'
 require 'bundler'
+require 'simplecov'
+
+SimpleCov.start if ENV["COVERAGE"]
 
 Bundler.require :default, :development
 
