@@ -8,7 +8,7 @@ module CrazyHarry
 
     attr_accessor :from, :to
 
-    def change(opts)
+    def clean!(opts)
       self.from  =  opts.delete(:from)
       self.to    =  opts.delete(:to)
       self.text  =  opts.delete(:text)
@@ -17,6 +17,7 @@ module CrazyHarry
       self.steps << generic_from_to
 
       convert_inline_element_to_block!
+      self.run!
 
       self
     end

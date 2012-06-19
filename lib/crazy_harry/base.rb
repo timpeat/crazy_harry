@@ -10,7 +10,10 @@ module CrazyHarry
 
     def run!
       steps.compact.each{ |step| fragment.scrub!(step) }
-      fragment.to_s.squeeze(' ').strip
+    end
+
+    def to_s
+      self.fragment.to_s.squeeze(' ').strip
     end
 
     private
