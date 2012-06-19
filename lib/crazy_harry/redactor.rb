@@ -22,7 +22,7 @@ module CrazyHarry
       self.steps << strip_tags    unless prune || self.tags == []
       self.steps << prune_tags    if prune
 
-      self.run!
+      run!
 
       self
     end

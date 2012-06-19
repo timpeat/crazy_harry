@@ -3,7 +3,7 @@ module CrazyHarry
 
     attr_accessor :add_attributes, :from_text, :to_text
 
-    def translate(opts = {})
+    def translate!(opts = {})
       self.add_attributes   = opts.delete(:add_attributes)
       self.from_text        = opts.delete(:from_text)
       self.to_text          = opts.delete(:to_text)
@@ -12,6 +12,8 @@ module CrazyHarry
 
       self.steps << change_attributes if self.add_attributes
       self.steps << change_text if change_text?
+
+      run!
 
       self
     end

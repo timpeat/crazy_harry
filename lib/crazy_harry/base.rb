@@ -1,6 +1,8 @@
 module CrazyHarry
   class Base
 
+    # TODO: Make everything callable/chainable from Base.
+    
     attr_accessor :fragment, :scope, :steps, :text
 
     def initialize(opts = {})
@@ -8,15 +10,15 @@ module CrazyHarry
       self.steps = []
     end
 
-    def run!
-      steps.compact.each{ |step| fragment.scrub!(step) }
-    end
-
     def to_s
       self.fragment.to_s.squeeze(' ').strip
     end
 
     private
+
+    def run!
+      steps.compact.each{ |step| fragment.scrub!(step) }
+    end
 
     def alter_this_node?(node)
       ( self.text       ? node.text == self.text                          : true ) &&

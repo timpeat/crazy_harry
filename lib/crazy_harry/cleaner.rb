@@ -17,7 +17,8 @@ module CrazyHarry
       self.steps << generic_from_to
 
       convert_inline_element_to_block!
-      self.run!
+
+      run!
 
       self
     end
