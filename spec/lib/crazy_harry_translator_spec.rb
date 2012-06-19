@@ -3,8 +3,6 @@ require 'spec_helper'
 describe CrazyHarry::Translator do
 
   #   Add attribute: "partner" to all tags
-  #
-  #   Another ADS suggestion.  Not sure it if it needed for the first cut.
   #   Transform "lodging" to "hotel"
 
   let(:translator) { CrazyHarry::Translator }
