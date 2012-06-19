@@ -2,7 +2,7 @@ module CrazyHarry
   class Translator
 
     attr_accessor :fragment, :text, :scope, :steps,
-      :add_attributes
+      :add_attributes, :from_text, :to_text
 
     def initialize(opts = {})
       self.fragment = Loofah.fragment(opts.delete(:fragment)) if opts.has_key?(:fragment)
@@ -11,8 +11,11 @@ module CrazyHarry
 
     def translate(opts = {})
       self.add_attributes   = opts.delete(:add_attributes)
+      self.from_text        = opts.delete(:from_text)
+      self.to_text          = opts.delete(:to_text)
 
-      self.steps << change_attributes
+      self.steps << change_attributes if self.add_attributes
+      self.steps << change_text if change_text?
 
       self
     end
@@ -24,6 +27,10 @@ module CrazyHarry
 
     private
 
+    def change_text?
+      self.from_text && self.to_text
+    end
+
     def change_attributes
       Loofah::Scrubber.new do |node|
         self.add_attributes.map do |k,v|
@@ -31,6 +38,16 @@ module CrazyHarry
 
           node[node_key] = [node[node_key], v].compact.join(' ')
         end
+      end
+    end
+
+    def change_text
+      Loofah::Scrubber.new do |node|
+        capitalized_from = self.from_text.capitalize
+        capitalized_to   = self.to_text.capitalize
+
+        node.content = node.content.gsub(/#{self.from_text.downcase}/, self.to_text.downcase) if node.content[/#{self.from_text.downcase}/]
+        node.content = node.content.gsub(/#{capitalized_from}/, capitalized_to) if node.content[/#{capitalized_from}/]
       end
     end
 
