@@ -11,6 +11,10 @@ describe CrazyHarry do
 
   context "default actions" do
 
+    it "should relentlessly remove br tags" do
+      harry.fragment('<p>hello</p><br /><strong>HELLO</strong><br /><br />').to_s.should == '<p>hello</p><strong>HELLO</strong>'
+    end
+
     context "removing blank tags" do
 
       TAGS_TO_REMOVE.each do |name,example|
