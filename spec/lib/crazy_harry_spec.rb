@@ -21,6 +21,38 @@ describe CrazyHarry do
 
     end
 
+    context "inline tags to blocks" do
+
+      it "should automatically change br to p" do
+        harry.fragment( 'Hotel Details<br />' ).to_s.should == '<p>Hotel Details</p>'
+      end
+
+      it "should automatically change multiple br tags to a single p" do
+        harry.fragment(  'Hotel Details<br /><br /><br />' ).to_s.should == '<p>Hotel Details</p>'
+      end
+
+      it "should automatically clear whitespace when converting line-style to block-style" do
+         harry.fragment(  'hotel<br />        hostel      <br />').to_s.should == '<p>hotel</p><p>hostel</p>'
+      end
+
+      it "should automatically change all br tags to wrapped p tags" do
+        harry.fragment( 'hotel<br /> hostel<br /> tent<br />').to_s.should == '<p>hotel</p><p>hostel</p><p>tent</p>'
+      end
+
+      it "should automatically change all multiple br tags to wrapped tags" do
+        harry.fragment(  'hotel<br /><br /><br/> hostel<br /> tent<br />').to_s.should == '<p>hotel</p><p>hostel</p><p>tent</p>'
+      end
+
+      it "should automatically change leading inline tags to block tags" do
+        harry.fragment(  '<br /><br />hotel').to_s.should == '<p>hotel</p>'
+      end
+
+      it "should ignore stray inline tags if they don't appear relevant to the context" do
+        harry.fragment(  '<br /><br />hotel <br />hostel<br />').to_s.should == '<p>hotel</p><p>hostel</p>'
+      end
+
+    end
+
     context "de-duping" do
 
       it "should automatically de-dupe lists" do

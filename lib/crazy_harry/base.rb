@@ -1,6 +1,7 @@
 module CrazyHarry
   class Base
     include CrazyHarry::Default
+    include CrazyHarry::Change
 
     # TODO: Make everything callable/chainable from Base.
     

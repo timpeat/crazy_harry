@@ -1,24 +1,25 @@
 require 'loofah'
 
-%w(default base cleaner redactor translator version).each do |load_lib|
+%w(default change base redactor translator version).each do |load_lib|
   require_relative "crazy_harry/#{load_lib}"
 end
 
 module CrazyHarry
 
-  attr_accessor :harry
+  attr_accessor :base
 
   class << self
 
     def fragment(fragment)
-      harry = Base.new(fragment: fragment)
-      harry.no_blanks!
-      harry.dedupe!
-      harry
+      base = Base.new(fragment: fragment)
+      base.no_blanks!
+      base.convert_br_to_p!
+      base.dedupe!
+      base
     end
 
     def to_s
-      @harry.to_s
+      @base.to_s
     end
 
   end
