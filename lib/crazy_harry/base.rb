@@ -3,6 +3,7 @@ module CrazyHarry
     include CrazyHarry::Default
     include CrazyHarry::Change
     include CrazyHarry::Redact
+    include CrazyHarry::Translate
 
     # TODO: Make everything callable/chainable from Base.
     

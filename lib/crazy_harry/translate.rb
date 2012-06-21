@@ -1,5 +1,5 @@
 module CrazyHarry
-  class Translator < Base
+  module Translate
 
     attr_accessor :add_attributes, :from_text, :to_text
 
@@ -20,8 +20,9 @@ module CrazyHarry
 
     private
 
-    def alter_this_node?(node)
-     super(node) &&
+    def translate_this_node?(node)
+     ( self.text       ? node.text == self.text                          : true ) &&
+     ( self.scope      ? node.parent.name == self.scope                  : true ) &&
      true
     end
 
@@ -29,9 +30,10 @@ module CrazyHarry
       self.from_text && self.to_text
     end
 
+    # TODO move this to CrazyHarry::Change.
     def change_attributes
       Loofah::Scrubber.new do |node|
-        if alter_this_node?(node)
+        if translate_this_node?(node)
           self.add_attributes.map do |k,v|
             node_key = k.to_s
 

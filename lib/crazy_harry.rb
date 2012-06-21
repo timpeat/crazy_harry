@@ -1,6 +1,6 @@
 require 'loofah'
 
-%w(default change redact base translator version).each do |load_lib|
+%w(default change redact translate base version).each do |load_lib|
   require_relative "crazy_harry/#{load_lib}"
 end
 
