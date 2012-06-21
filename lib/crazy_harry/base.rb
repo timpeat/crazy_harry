@@ -1,8 +1,6 @@
-require 'crazy_harry/dedupe'
-
 module CrazyHarry
   class Base
-    include CrazyHarry::Dedupe
+    include CrazyHarry::Default
 
     # TODO: Make everything callable/chainable from Base.
     

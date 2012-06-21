@@ -11,7 +11,10 @@ module CrazyHarry
   class << self
 
     def fragment(fragment)
-      harry = Base.new(fragment: fragment)  
+      harry = Base.new(fragment: fragment)
+      harry.no_blanks!
+      harry.dedupe!
+      harry
     end
 
     def to_s
