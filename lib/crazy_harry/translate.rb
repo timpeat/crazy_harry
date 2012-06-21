@@ -37,7 +37,7 @@ module CrazyHarry
           self.add_attributes.map do |k,v|
             node_key = k.to_s
 
-            node[node_key] = [node[node_key], v].compact.join(' ')
+            node[node_key] = [node[node_key], v].compact.join(' ') unless node[node_key].to_s[/#{v}/]
           end
         end
       end

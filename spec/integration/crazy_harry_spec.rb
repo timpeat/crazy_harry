@@ -18,7 +18,6 @@ describe CrazyHarry do
       .redact!( unsafe: true, tags: 'em' )
       .change!( from: 'b', to: 'h3' )
       .to_s.should == 'Place <p class="partner">Hotel</p><h3 class="partner">Location:</h3>'
-
   end
 
 end
