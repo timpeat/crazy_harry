@@ -5,8 +5,6 @@ module CrazyHarry
     include CrazyHarry::Redact
     include CrazyHarry::Translate
 
-    # TODO: Make everything callable/chainable from Base.
-    
     attr_accessor :fragment, :scope, :steps, :text
 
     def initialize(opts = {})
@@ -21,12 +19,12 @@ module CrazyHarry
     private
 
     def run!
-      steps.compact.each{ |step| fragment.scrub!(step) }
-    end
-
-    def alter_this_node?(node)
-      ( self.text       ? node.text == self.text                          : true ) &&
-      ( self.scope      ? node.parent.name == self.scope                  : true )
+      steps.compact.delete_if do |step|
+        if steps.size > 0
+          fragment.scrub!(step)
+          true
+        end
+      end
     end
 
   end
