@@ -21,12 +21,12 @@ A gem for blowing up bad html in partner fragments.
  * It should probably be able to unwrap stand-alone headers from
    paragraphs:
 
-    <p><b>I'm supposed to be a header</b></p> 
+    `<p><b>I'm supposed to be a header</b></p>`
 
   should become:
 
-    <h3>I'm supposed to be a header</h3>
+    `<h3>I'm supposed to be a header</h3>`
 
   not:
   
-    <p><h3>I'm supposed to be a header</h3></p>
+    `<p><h3>I'm supposed to be a header</h3></p>`
