@@ -1,1 +1,1 @@
-rvm use 1.9.3@crazy_harry
+rvm use 1.9.3@crazy_harry --create

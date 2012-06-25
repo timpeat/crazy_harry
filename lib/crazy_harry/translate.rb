@@ -22,8 +22,7 @@ module CrazyHarry
 
     def translate_this_node?(node)
      ( self.text       ? node.text == self.text                          : true ) &&
-     ( self.scope      ? node.parent.name == self.scope                  : true ) &&
-     true
+     ( self.scope      ? node.parent.name == self.scope                  : true )
     end
 
     def change_text?
