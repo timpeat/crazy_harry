@@ -16,7 +16,7 @@ describe CrazyHarry::Change do
     let(:harry){ CrazyHarry }
 
     it "should be able to change one tag to another" do
-      harry.fragment( '<b>Location:</b>' ).change!( from: 'b', to: 'h3' ).to_s.should == '<h3>Location:</h3>'
+      harry.fragment( '<p><b>Location:</b></p>' ).change!( from: 'b', to: 'h3' ).to_s.should == '<p><h3>Location:</h3></p>'
     end
 
     context "chaining" do
