@@ -75,6 +75,10 @@ describe CrazyHarry do
         harry.fragment('<h3>Here</h3><p>Yep, here.</p><h3>Here</h3><p>Here again.</p>').to_s.should == '<h3>Here</h3><p>Yep, here.</p><p>Here again.</p>'
       end
 
+      it "should de-dupe if the only content difference is whitespace" do
+        pending "Too complicated for the first cut."
+      end
+
     end
 
   end
