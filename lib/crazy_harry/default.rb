@@ -10,9 +10,8 @@ module CrazyHarry
     end
 
     def dedupe!
-      deduped_html_set = self.fragment.children.map(&:to_html).to_set
-
-      self.fragment = Loofah.fragment(deduped_html_set.to_a.join(''))
+      self.fragment = Loofah.fragment(html_with_duplicates_removed_from_the_bottom_up)
+      self
     end
 
     def convert_br_to_p!
@@ -43,6 +42,25 @@ module CrazyHarry
       Loofah::Scrubber.new do |node|
         node.remove if this_element?(node) && node.content.empty?
       end
+    end
+
+    def html_with_duplicates_removed_from_the_bottom_up
+      all_elements.reverse.delete_if{ |e| all_elements_less_current_element(e).include?(e) }.reverse.compact.join('')
+    end
+
+    def all_elements_less_current_element(element)
+      remove = true
+
+      all_elements_less_current_node = all_elements.delete_if do |e|
+        if e == element && remove
+          remove = false
+          true
+        end
+      end
+    end
+
+    def all_elements
+      @all_elements ||= self.fragment.children.map(&:to_html)
     end
 
   end
