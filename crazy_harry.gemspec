@@ -19,10 +19,11 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   # specify any dependencies here; for example:
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'guard'
-  s.add_development_dependency 'guard-rspec'
-  s.add_development_dependency 'simplecov'
+  s.add_development_dependency 'rspec',       '>=2.10.0'
+  s.add_development_dependency 'guard',       '>=1.1.1'
+  s.add_development_dependency 'guard-rspec', '>=1.0.1'
+  s.add_development_dependency 'simplecov',   '>=0.6.4'
 
-  s.add_runtime_dependency 'loofah'
+  s.add_runtime_dependency 'loofah',          '>=1.2.1'
+  s.add_runtime_dependency 'nokogiri',        '>=1.5.5'
 end
