@@ -24,7 +24,7 @@ describe CrazyHarry::Change do
         '<h3>Header</h3>'
     end
 
-    it "should not unwrap paragraphs indiscriminantly" do
+    it "should not unwrap paragraphs indiscriminately" do
       harry.fragment('<p><b>Header</b><br />Content</p>').change!(from: 'b', to: 'h3').to_s.should ==
         '<p><h3>Header</h3>Content</p>'
     end
