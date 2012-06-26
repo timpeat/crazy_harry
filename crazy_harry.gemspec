@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["TA Tyree"]
   s.email       = ["todd.tyree@lonelyplanet.co.uk"]
   s.homepage    = "https://github.com/lonelyplanet/crazy_harry"
-  s.summary     = %q{High level HTML fragment sanitizer}
-  s.description = %q{High level HTML fragment sanitizer}
+  s.summary     = %q{A High level HTML fragment sanitizer.}
+  s.description = %q{CrazyHarry is a high-level html fragment sanitiser/cleaner based on Loofah.}
 
   s.rubyforge_project = "crazy_harry"
 

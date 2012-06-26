@@ -1,18 +1,32 @@
-# Crazy Harry
+# CrazyHarry
 
-A gem for blowing up bad html in partner fragments.
+CrazyHarry is a high-level html fragment sanitiser/cleaner in use at
+[Lonely Planet](http://www.lonelyplanet.com).  It is based on [Flavour
+Jones's](http://mike.daless.io) [Loofah Gem](https://github.com/flavorjones). 
+
+[Loofah](https://github.com/flavorjones) is a great tool and we've been
+using it in a number of different projects.  Hoewever, we found that we
+were repeating the same types of cleaning job in multiple places. 
+
+CrazyHarry wraps up a number these tasks in a simple DSL, while adding commands for a few edge cases that are not straightforward with Loofah.
+
+## Installation 
+
+    gem 'crazy_harry' 
+
+    bundle install 
 
 ## Usage
 
-    lodgings.each do |l|
+    object_with_description.each do |obj|
 
       if descriptions[l.external_id]
-        sanitised_fragment = CrazyHarry.fragment(descriptions[l.external_id])
+        sanitised_fragment = CrazyHarry.fragment(descriptions[obj.external_id])
           .redact!( unsafe: true,     tags: 'img')
           .change!( from: 'b',        to: 'h3' )
           .change!( from: 'strong',   to: 'h3' )
 
-        l.update_column(:description, sanitised_fragment.to_s)
+        obj.update_column(:description, sanitised_fragment.to_s)
       end
     end
 
@@ -23,8 +37,9 @@ paragraphs and de-dupes content.
 
 ## Chaining
 
-As per the previous example, all calls *except* `.strip!` (which removes
-all markup) may be chained.  
+As per the previous example, all calls **except** `.strip!` (which removes
+all markup) may be chained.  (`.strip!` can be the last element in a
+chain.  See below). 
 
 ## Scoping and Targeting by Content
 
@@ -64,7 +79,7 @@ the existing one:
 
 ### Specific Tags
 
-Use the `.redact!` command.  It *does not* strip unsafe tags by default.
+Use the `.redact!` command.  It **does not** strip unsafe tags by default.
 To do this, pass the `unsafe: true` option.
 
 ### All Tags
@@ -83,10 +98,17 @@ will return:
  
     <h3>Hotel</h3> lodging
 
-## Known Issues
+## Known Issues/TODO
 
-De-duping does not take account of whitespace.  So, `<p>Some
-Content</p>` and `<p>Some Content </p>` will not be treated as
-duplicates.
+  * De-duping does not take account of whitespace.  So, `<p>Some Content</p>` and `<p>Some Content </p>` will not be treated as duplicates.
+  * Be able to turn off default actions.
+  * It should be able to work on documents as well as fragments.
+  * Merge `.translate!` with `.change!` 
 
-It may be useful to be able to turn off default actions.  
+## Contributing
+
+  1. Fork it
+  2. Create your feature branch (`git checkout -b my-new-feature`)
+  3. Commit your changes (`git commit -am 'Added some feature'`)
+  4. Push to the branch (`git push origin my-new-feature`)
+  5. Create new Pull Request
