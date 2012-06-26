@@ -1,5 +1,7 @@
 # CrazyHarry
 
+[![Build Status](https://secure.travis-ci.org/lonelyplanet/crazy_harry.png)](http://travis-ci.org/lonelyplanet/crazy_harry)
+
 CrazyHarry is a high-level html fragment sanitiser/cleaner in use at
 [Lonely Planet](http://www.lonelyplanet.com).  It is based on [Flavour
 Jones's](http://mike.daless.io) [Loofah Gem](https://github.com/flavorjones). 
