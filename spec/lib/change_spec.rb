@@ -16,7 +16,17 @@ describe CrazyHarry::Change do
     let(:harry){ CrazyHarry }
 
     it "should be able to change one tag to another" do
-      harry.fragment( '<p><b>Location:</b></p>' ).change!( from: 'b', to: 'h3' ).to_s.should == '<p><h3>Location:</h3></p>'
+      harry.fragment( '<b>Location:</b>' ).change!( from: 'b', to: 'h3' ).to_s.should == '<h3>Location:</h3>'
+    end
+
+    it "should unwrap unnecessary paragraphs" do
+      harry.fragment('<p><strong>Header</strong><br /></p>').change!(from: 'strong', to: 'h3').to_s.should == 
+        '<h3>Header</h3>'
+    end
+
+    it "should not unwrap paragraphs indiscriminantly" do
+      harry.fragment('<p><b>Header</b><br />Content</p>').change!(from: 'b', to: 'h3').to_s.should ==
+        '<p><h3>Header</h3>Content</p>'
     end
 
     context "chaining" do

@@ -15,6 +15,7 @@ module CrazyHarry
       self.scope =  opts.delete(:scope)
 
       self.steps << generic_from_to
+      self.steps << unwrap_unnecessary_paragraphs
 
       run!
 
@@ -40,6 +41,18 @@ module CrazyHarry
       Loofah::Scrubber.new do |node|
         node.name = self.to if change_this_node?(node)
       end
+    end
+
+    def unwrap_unnecessary_paragraphs
+      Loofah::Scrubber.new do |node|
+        node.replace(node.children.first) if unnecessary_paragraph?(node)
+      end
+    end
+
+    def unnecessary_paragraph?(node)
+      node.name == 'p' &&
+      node.children.size == 1 &&
+      Loofah::Elements::BLOCK_LEVEL.include?(node.children.first.name)
     end
 
   end
