@@ -11,10 +11,10 @@ module CrazyHarry
   class << self
 
     def fragment(fragment, opts = {})
-      no_br_changes = opts.delete(:no_br_changes)
+      preserve_brs = opts.delete(:preserve_brs)
       base = Base.new(fragment: fragment)
       base.no_blanks!
-      base.convert_br_to_p! unless no_br_changes
+      base.convert_br_to_p! unless preserve_brs
       base.dedupe!
       base
     end
