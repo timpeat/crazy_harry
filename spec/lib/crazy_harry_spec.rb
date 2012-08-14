@@ -81,6 +81,14 @@ describe CrazyHarry do
 
     end
 
+    context 'with default br processing overridden' do
+
+      it 'does not remove br tags' do
+        harry.fragment('<p>aa <br> bb</p>', :no_br_changes => true).to_s.should == '<p>aa <br> bb</p>'
+      end
+
+    end
+
   end
 
 end
