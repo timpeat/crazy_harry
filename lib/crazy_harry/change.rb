@@ -16,6 +16,7 @@ module CrazyHarry
 
       self.steps << generic_from_to
       self.steps << unwrap_unnecessary_paragraphs
+      self.steps << foster_orphaned_nodes
 
       run!
 
@@ -55,5 +56,27 @@ module CrazyHarry
       Loofah::Elements::BLOCK_LEVEL.include?(node.children.first.name)
     end
 
+    def foster_orphaned_nodes
+      Loofah::Scrubber.new do |node|
+        node.extend(FosterModule)
+        node.foster!
+      end
+    end
+  end
+  
+  module FosterModule
+    def foster!
+      if orphaned_li?
+        self.replace wrap_li
+      end
+    end
+
+    def orphaned_li?
+      name == 'li' && parent.name !~ /ol|ul/
+    end
+    
+    def wrap_li
+      Nokogiri.make("<ul>#{self}</ul>") 
+    end
   end
 end
