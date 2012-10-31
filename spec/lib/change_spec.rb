@@ -29,6 +29,11 @@ describe CrazyHarry::Change do
         '<p><h3>Header</h3>Content</p>'
     end
 
+    it "should wrap orphaned list items" do
+      harry.fragment('<p><li>orphan</li><ul><li>item</li></p>').change!(from: 'b', to: 'h3').to_s.should ==
+        '<ul><li>orphan</li></ul><ul><li>item</li></ul>'
+    end
+    
     context "chaining" do
 
        it "should be able to chain calls" do
